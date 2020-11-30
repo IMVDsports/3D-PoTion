@@ -3,12 +3,12 @@ from config import configs
 
 # get 2D potion from ground truth, The input paths are PennAction directory and output directory
 PATH_PENN=configs['dir_penn_action']
-PATH_OUTPUT=os.path.join(configs['dir_potion'],'gt-'+str(configs['frame_size']))
+PATH_OUTPUT=os.path.join(configs['dir_potion'],'gt-labels2-normtest-'+str(configs['frame_size']))
 if(os.path.exists(PATH_OUTPUT)):
     os.system('rm -r '+PATH_OUTPUT)
 os.system('mkdir '+PATH_OUTPUT)
-DIR_LABELS=os.path.join(PATH_PENN,'labels')
-
+DIR_LABELS=os.path.join(PATH_PENN,'labels2')
+ 
 NUM_JOINT=configs['num_joints']['gt']
 FRAME_SIZE=configs['frame_size']
 C=configs['C']
@@ -60,8 +60,14 @@ def worker(each_label):
 
         # keras take channel last
         descriptor=np.moveaxis(descriptor,0,-1)
-        path=os.path.join(PATH_OUTPUT,each_label+'.npy')
-        np.save(path,descriptor)
+        # np.save(path+"B&W_Mask", img_mask)
+        # path=os.path.join(PATH_OUTPUT,each_label+'.npy')
+        # np.save(path,descriptor)
+        print(str(each_label)+".mat")
+        # print("CLASS = ", annotation['action'][0])
+        print("VIDEO NAME = ", annotation['video_name'][0])
+        np.save(PATH_OUTPUT + '/' + each_label,descriptor)
+        print(str(each_label)+".npy")
     except:
         print('Error'+ path)
 
@@ -70,6 +76,7 @@ if __name__=='__main__':
     all_labels=sorted(os.listdir(DIR_LABELS)) # list all the videos
     p=Pool()
     for each_label in all_labels:  # loop each video
+        print("CHECK LABEL = ",each_label)
         if(each_label!='.DS_Store'): # mac may corrupt the file
             p.apply_async(worker,args=(each_label,))
     p.close()
@@ -95,7 +102,7 @@ if __name__=='__main__':
             else:
                 partition['test'].append(each_label)
 
-    # save meta data
+    #save meta data
     os.system('mkdir '+PATH_OUTPUT+'/meta')
     path=os.path.join(PATH_OUTPUT,'meta','partition.json')
     with open(path,'w') as fp:

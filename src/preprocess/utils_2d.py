@@ -127,10 +127,19 @@ Intensity: [n_joints, height, width]
 Normalized_potion: [n_joints, channel, height, width]
 '''
 def get_descriptor(heatmaps,C):
+    # print("HEATMAPS shape ==", heatmaps.shape)
     potion = get_potion(heatmaps, C)
     intensity = get_intensity(potion)
+    # print("POTION 1st shape ==", potion.shape)
+    # print("INTENSITY shape ==",intensity.shape)
+    norm_potion = get_normalized_potion(potion, intensity)
+    # print("NORM POTION 1st shape ==", norm_potion.shape)
     potion=np.reshape(potion,(potion.shape[0]*potion.shape[1],potion.shape[2],potion.shape[3]))
-    descriptor=np.vstack((potion,intensity))   
+    norm_potion=np.reshape(norm_potion,(norm_potion.shape[0]*norm_potion.shape[1],norm_potion.shape[2],norm_potion.shape[3]))
+    # print("NORM POTION 2nd shape ==", norm_potion.shape)
+    # print("POTION 2nd shape ==", potion.shape)
+    descriptor=np.vstack((potion,intensity,norm_potion))   
+    print("DESCRIPTOR shape ==", descriptor.shape)
     return descriptor
 
 
@@ -138,25 +147,50 @@ def get_descriptor(heatmaps,C):
 Define the mapping from semantic names to labels
 '''
 dict_action = {
-    "baseball_pitch": 1,
-    "clean_and_jerk": 2,
-    "pull_up": 3,
-    "pullup": 3,
-    "strumming_guitar": 4,
-    "strum_guitar": 4,
-    "baseball_swing": 5,
-    "golf_swing": 6,
-    "push_up": 7,
-    "pushup": 7,
-    "tennis_forehand": 8,
-    "bench_press": 9,
-    "jumping_jacks": 10,
-    "sit_up": 11,
-    "situp": 11,
-    "tennis_serve": 12,
-    "bowl": 13,
-    "jump_rope": 14,
-    "squats": 15,
-    "squat": 15,
+    # "baseball_pitch": 1,
+    # "clean_and_jerk": 2,
+    # "pull_up": 3,
+    # "pullup": 3,
+    # "strumming_guitar": 4,
+    # "strum_guitar": 4,
+    # "baseball_swing": 5,
+    # "golf_swing": 6,
+    # "push_up": 7,
+    # "pushup": 7,
+    # "tennis_forehand": 8,
+    # "bench_press": 9,
+    # "jumping_jacks": 10,
+    # "sit_up": 11,
+    # "situp": 11,
+    # "tennis_serve": 12,
+    # "bowl": 13,
+    # "jump_rope": 14,
+    # "squats": 15,
+    # "squat": 15,
+
+    "brush_hair": 1,
+    "catch": 2,
+    "clap": 3,
+    "climb_stairs": 4,
+    "golf": 5,
+    "jump": 6,
+    "kick_ball": 7,
+    "pick": 8,
+    "pour": 9,
+    "pullup": 10,
+    "push": 11,
+    "run": 12,
+    "shoot_ball": 13,
+    "shoot_bow": 14,
+    "shoot_gun": 15,
+    "sit": 16,
+    "stand": 17,
+    "swing_baseball": 18,
+    "throw": 19,
+    "walk": 20,
+    "wave": 21,
+
+
+
 }
 
